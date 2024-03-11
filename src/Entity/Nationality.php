@@ -2,14 +2,24 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use App\Repository\NationalityRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use App\Repository\NationalityRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: NationalityRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Post(),
+        new Patch()
+    ]
+)]
 class Nationality
 {
     #[ORM\Id]
@@ -18,6 +28,7 @@ class Nationality
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('read:author:item')] 
     private ?string $country = null;
 
     #[ORM\OneToMany(targetEntity: Author::class, mappedBy: 'nationality')]

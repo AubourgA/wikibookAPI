@@ -1,33 +1,60 @@
 <?php
 
 namespace App\Entity;
-use ApiPlatform\Metadata\ApiResource;
-use App\Repository\AuthorRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use Doctrine\DBAL\Types\Types;
+use ApiPlatform\Metadata\Patch;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\AuthorRepository;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Length;
 
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new GetCollection( normalizationContext:['groups' => ['read:author:collection']
+             ]
+        ),
+        new Get(normalizationContext:['groups' => ['read:author:item']                                                   
+            ]
+        ),
+        new Post(denormalizationContext:['groups' => ['write:author:item']                                               
+            ]
+        ),
+        new Patch()
+    ]
+
+)]
 class Author
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:author:collection','read:author:item'])] 
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read:author:collection','read:author:item','create:author:collection']),
+      Length(min:3)
+    ]  
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read:author:collection','read:author:item','create:author:collection'])] 
     private ?string $firstname = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['read:author:item','create:author:collection'])] 
     private ?\DateTimeInterface $birthdate = null;
 
     #[ORM\ManyToOne(inversedBy: 'authors')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read:author:item','create:author:collection'])] 
     private ?Nationality $nationality = null;
 
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'author')]
