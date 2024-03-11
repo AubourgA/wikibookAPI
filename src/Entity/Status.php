@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: StatusRepository::class)]
 #[ApiResource(
@@ -27,6 +28,11 @@ class Status
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank()]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z]+$/',
+        match:true,
+        message: 'Le champs doit etre que des lettres')]
     private ?string $type = null;
 
     #[ORM\OneToMany(targetEntity: BookCopy::class, mappedBy: 'status')]

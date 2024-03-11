@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
@@ -31,10 +32,12 @@ class Book
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:editor:item','read:genre:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
+    #[Groups(['read:editor:item', 'read:genre:item','read:language:item'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -47,7 +50,10 @@ class Book
     private ?int $YearPublished = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Isbn()]
+    #[Assert\Isbn(
+        type: null,
+        message: 'Le champs doit etre un isbn 10 ou 13 caracteres',
+    )]
     #[Assert\NotBlank()]
     private ?string $ISBN = null;
 
@@ -58,6 +64,7 @@ class Book
 
     #[ORM\ManyToOne(inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read:editor:item','read:genre:item','read:language:item'])]
     private ?Author $author = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
@@ -70,6 +77,7 @@ class Book
 
     #[ORM\ManyToOne(inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank()]
     private ?Language $language = null;
 
     #[ORM\OneToMany(targetEntity: BookCopy::class, mappedBy: 'book')]

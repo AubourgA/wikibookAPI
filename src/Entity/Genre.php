@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Patch;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,11 +11,14 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: GenreRepository::class)]
 #[ApiResource(
     operations: [
         new GetCollection(),
+        new Get(normalizationContext: ['groups' => 'read:genre:item']),
         new Post(),
         new Patch()
     ]
@@ -24,12 +28,22 @@ class Genre
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:genre:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank()]
+    #[Assert\Length(min:4)]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z]+$/',
+        match:true,
+        message: 'Le champs doit etre que des lettres')]
+    #[Groups(['read:genre:item'])]
     private ?string $name = null;
 
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'genre')]
+    #[Groups(['read:genre:item'])]
+ 
     private Collection $books;
 
     public function __construct()

@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
 #[ApiResource(
@@ -23,8 +24,8 @@ use Symfony\Component\Validator\Constraints\Length;
         new Get(normalizationContext:['groups' => ['read:author:item']                                                   
             ]
         ),
-        new Post(denormalizationContext:['groups' => ['write:author:item']                                               
-            ]
+        new Post(
+            denormalizationContext:['groups' => ['create:author:collection'] ]                                         
         ),
         new Patch()
     ]
@@ -39,13 +40,32 @@ class Author
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read:author:collection','read:author:item','create:author:collection']),
+    #[Groups(['read:author:collection',
+              'read:author:item',
+              'create:author:collection',
+              'read:editor:item',
+              'read:genre:item',
+              'read:language:item'
+            ]),
       Length(min:3)
     ]  
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z]+$/',
+        match:true,
+        message: 'Le champs doit etre que des lettres')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read:author:collection','read:author:item','create:author:collection'])] 
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z]+$/',
+        match:true,
+        message: 'Le champs doit etre que des lettres')]
+    #[Groups(['read:author:collection',
+              'read:author:item',
+              'create:author:collection',
+              'read:editor:item',
+              'read:genre:item',
+              'read:language:item'])] 
     private ?string $firstname = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
