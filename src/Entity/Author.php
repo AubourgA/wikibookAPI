@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
 #[ApiResource(
@@ -26,11 +27,12 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             denormalizationContext:['groups' => ['create:author:collection'] ]                                         
-        ),
-        new Patch()
+        )
     ]
 
 )]
+
+#[UniqueEntity(fields: ['name', 'firstname'], message: 'Le nom et le prénom doivent être uniques.')]
 class Author
 {
     #[ORM\Id]
@@ -45,7 +47,9 @@ class Author
               'create:author:collection',
               'read:editor:item',
               'read:genre:item',
-              'read:language:item'
+              'read:language:item',
+              'read:nationalities:item',
+              'read:book:item'
             ]),
       Length(min:3)
     ]  
@@ -65,7 +69,9 @@ class Author
               'create:author:collection',
               'read:editor:item',
               'read:genre:item',
-              'read:language:item'])] 
+              'read:language:item',
+              'read:nationalities:item',
+              'read:book:item'])] 
     private ?string $firstname = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
@@ -78,6 +84,7 @@ class Author
     private ?Nationality $nationality = null;
 
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'author')]
+    #[Groups(['read:author:item'])]
     private Collection $books;
 
     public function __construct()

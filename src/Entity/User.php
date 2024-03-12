@@ -2,16 +2,20 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
 use DateTimeImmutable;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use App\Repository\UserRepository;
+use ApiPlatform\Metadata\ApiResource;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ApiResource()]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -20,6 +24,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\Email(
+        message: 'La valeur : {{ value }} n\' est pas un email valide.',
+    )]
     private ?string $email = null;
 
     /**
@@ -35,18 +42,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank()]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z]+$/',
+        match:true,
+        message: 'Le champs doit etre que des lettres')]
+    #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank()]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z]+$/',
+        match:true,
+        message: 'Le champs doit etre que des lettres')]
+    #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Regex(
+        pattern: '/^(?:\+33|0)[1-9](?:\d\s?){8}$/',
+        match:true,
+        message: 'Le champs doit etre que de type numero de telehpone')]
     private ?string $numPortable = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z]+$/',
+        match:true,
+        message: 'Le champs doit etre que des lettres')]
     private ?string $city = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank()]
     private ?\DateTimeImmutable $subscribedAt = null;
 
     #[ORM\Column]
@@ -60,6 +88,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
+        $this->isActive = 1;
         $this->loans = new ArrayCollection();
         $this->subscribedAt = new DateTimeImmutable();
     }

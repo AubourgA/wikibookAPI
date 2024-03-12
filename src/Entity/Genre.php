@@ -17,10 +17,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: GenreRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(),
+        new GetCollection(normalizationContext: ['groups'=> 'read:genre:collection']),
         new Get(normalizationContext: ['groups' => 'read:genre:item']),
         new Post(),
-        new Patch()
+        new Patch(denormalizationContext: ['groups' => 'write:genre:item'])
     ]
 )]
 class Genre
@@ -28,7 +28,7 @@ class Genre
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:genre:item'])]
+    #[Groups(['read:genre:collection','read:genre:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -38,12 +38,11 @@ class Genre
         pattern: '/^[a-zA-Z]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
-    #[Groups(['read:genre:item'])]
+    #[Groups(['read:genre:collection','read:genre:item','write:genre:item','read:book:item'])]
     private ?string $name = null;
 
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'genre')]
     #[Groups(['read:genre:item'])]
- 
     private Collection $books;
 
     public function __construct()

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Patch;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,13 +12,15 @@ use App\Repository\NationalityRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: NationalityRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(),
+        new GetCollection( normalizationContext: ['groups' => 'read:nationalities:collection']),
+        new Get( normalizationContext:['groups'=> 'read:nationalities:item']),
         new Post(),
-        new Patch()
+        new Patch( denormalizationContext:['groups' => 'write:nationalities:item'])
     ]
 )]
 class Nationality
@@ -28,10 +31,15 @@ class Nationality
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('read:author:item')] 
+    #[Groups(['read:author:item','read:nationalities:collection','read:nationalities:item','write:nationalities:item'])] 
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z]+$/',
+        match:true,
+        message: 'Le champs doit etre que des lettres')]
     private ?string $country = null;
 
     #[ORM\OneToMany(targetEntity: Author::class, mappedBy: 'nationality')]
+    #[Groups(['read:nationalities:item'])]
     private Collection $authors;
 
     public function __construct()

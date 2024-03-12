@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: LanguageRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(),
+        new GetCollection(normalizationContext:['groups'=>'read:language:collection']),
         new Get(normalizationContext: ['groups' => 'read:language:item']),
         new Post(),
         new Patch()
@@ -28,7 +28,7 @@ class Language
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:language:item'])]
+    #[Groups(['read:language:collection','read:language:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -38,7 +38,7 @@ class Language
         pattern: '/^[a-zA-Z]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
-    #[Groups(['read:language:item'])]
+    #[Groups(['read:language:collection','read:language:item','read:book:item'])]
     private ?string $name = null;
 
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'language')]

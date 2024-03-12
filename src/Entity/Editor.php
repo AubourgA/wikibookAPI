@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection(normalizationContext:['groups' => 'read:editor:collection']),
         new Get(normalizationContext:['groups' => 'read:editor:item']),
         new Post(),
-        new Patch()
+        new Patch(denormalizationContext: ['groups'=>'write:editor:item'])
     ]
 )]
 class Editor
@@ -32,8 +32,12 @@ class Editor
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read:editor:collection','read:editor:item'])]
     #[Assert\NotBlank()]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z]+$/',
+        match:true,
+        message: 'Le champs doit etre que des lettres')]
+    #[Groups(['read:editor:collection','read:editor:item','write:editor:item','read:book:item'])]
     private ?string $name = null;
 
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'editor')]

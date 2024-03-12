@@ -2,22 +2,25 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\StatusRepository;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: StatusRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(),
+        new GetCollection( normalizationContext: ['groups' => 'read:status:collection']),
+        new Get( normalizationContext:['groups'=> 'read:status:item']),
         new Post(),
-        new Patch()
+        new Patch( denormalizationContext:['groups' => 'write:status:item'])
     ]
 )]
 class Status
@@ -25,6 +28,7 @@ class Status
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:status:collection','read:status:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -33,9 +37,15 @@ class Status
         pattern: '/^[a-zA-Z]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
+    #[Groups(['read:status:collection',
+                'read:status:item',
+                'write:status:item',
+                'read:bookcopy:item',
+                'write:bookcopy:item'])]
     private ?string $type = null;
 
     #[ORM\OneToMany(targetEntity: BookCopy::class, mappedBy: 'status')]
+    #[Groups(['read:status:item'])]
     private Collection $bookCopies;
 
     public function __construct()

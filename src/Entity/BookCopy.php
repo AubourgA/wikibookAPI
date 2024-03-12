@@ -13,14 +13,16 @@ use App\Repository\BookCopyRepository;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookCopyRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(),
+        new GetCollection(normalizationContext: ['groups'=>'read:bookcopy:collection']),
         new Post(),
-        new Get(),
-        new Patch(),
+        new Get(normalizationContext: ['groups'=>'read:bookcopy:item']),
+        new Patch(denormalizationContext: ['groups'=> 'write:bookcopy:item']),
         new Delete()
     ]
 )]
@@ -29,20 +31,30 @@ class BookCopy
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:bookcopy:collection','read:bookcopy:item','read:book:item'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookCopies')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read:bookcopy:collection',
+            'read:bookcopy:item',
+            'read:status:item',
+            'read:loan:item'])]
     private ?Book $book = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank()]
+    #[Groups(['read:bookcopy:collection','read:bookcopy:item','read:book:item'])]
     private ?\DateTimeInterface $serviceDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookCopies')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank()]
+    #[Groups(['read:loan:item','read:bookcopy:item','write:bookcopy:item'])]
     private ?Status $status = null;
 
     #[ORM\OneToMany(targetEntity: Loan::class, mappedBy: 'bookCopy')]
+    #[Groups(['read:bookcopy:item'])]
     private Collection $loans;
 
     public function __construct()
