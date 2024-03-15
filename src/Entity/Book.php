@@ -16,12 +16,13 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\Valid;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ApiResource(
     operations: [
         new GetCollection(normalizationContext: ['groups' => 'read:book:collection']),
-        new Post(),
+        new Post(denormalizationContext: ['groups'=>'write:book:collection']),
         new Get(normalizationContext: ['groups' => 'read:book:item']),
         new Delete()
     ]
@@ -45,20 +46,21 @@ class Book
             'read:loan:item',
             'read:bookcopy:collection',
             'read:bookcopy:item',
-            'read:author:item'])]
+            'read:author:item',
+            'write:book:collection'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank()]
     #[Assert\Length(max:750, maxMessage: 'Le message ne doit pas dépasser {{ limit }} caracteres')]
-    #[Groups(['read:book:item'])]
+    #[Groups(['read:book:item','write:book:collection'])]
     private ?string $synopsys = null;
 
     #[ORM\Column]
     #[Assert\NotBlank()]
     #[Assert\Positive]
     #[Assert\Length(min:4, max:4)]
-    #[Groups(['read:book:collection','read:book:item','read:author:item'])]
+    #[Groups(['read:book:collection','read:book:item','read:author:item','write:book:collection'])]
     private ?int $YearPublished = null;
 
     #[ORM\Column(length: 255)]
@@ -67,13 +69,13 @@ class Book
         message: 'Le champs doit etre un isbn 10 ou 13 caracteres',
     )]
     #[Assert\NotBlank()]
-    #[Groups(['read:book:collection','read:book:item'])]
+    #[Groups(['read:book:collection','read:book:item','write:book:collection'])]
     private ?string $ISBN = null;
 
     #[ORM\Column]
     #[Assert\NotBlank()]
     #[Assert\Positive]
-    #[Groups(['read:book:item'])]
+    #[Groups(['read:book:item','write:book:collection'])]
     private ?int $nbPage = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
@@ -81,23 +83,28 @@ class Book
     #[Groups(['read:editor:item',
                 'read:genre:item',
                 'read:language:item',
-                'read:book:item'])]
+                'read:book:item','write:book:collection'],
+    ),
+    Valid()]
     private ?Author $author = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['read:book:item'])]
+    #[Groups(['read:book:item','write:book:collection']),
+    Valid()]
     private ?Genre $genre = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['read:book:item'])]
+    #[Groups(['read:book:item','write:book:collection']),
+    Valid()]
     private ?Editor $editor = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank()]
-    #[Groups(['read:book:item'])]
+    #[Groups(['read:book:item','write:book:collection']),
+    Valid()]
     private ?Language $language = null;
 
     #[ORM\OneToMany(targetEntity: BookCopy::class, mappedBy: 'book', cascade: ['remove'])]

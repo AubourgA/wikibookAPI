@@ -49,7 +49,8 @@ class Author
               'read:genre:item',
               'read:language:item',
               'read:nationalities:item',
-              'read:book:item'
+              'read:book:item',
+              'write:book:collection'
             ]),
       Length(min:3)
     ]  
@@ -71,7 +72,7 @@ class Author
               'read:genre:item',
               'read:language:item',
               'read:nationalities:item',
-              'read:book:item'])] 
+              'read:book:item','write:book:collection'])] 
     private ?string $firstname = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
