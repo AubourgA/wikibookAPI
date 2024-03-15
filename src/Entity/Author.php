@@ -4,7 +4,6 @@ namespace App\Entity;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use Doctrine\DBAL\Types\Types;
-use ApiPlatform\Metadata\Patch;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\AuthorRepository;
 use ApiPlatform\Metadata\ApiResource;
@@ -18,6 +17,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
 #[ApiResource(
+    paginationItemsPerPage: 10,
+    paginationMaximumItemsPerPage:10,
     operations: [
         new GetCollection( normalizationContext:['groups' => ['read:author:collection']
              ]

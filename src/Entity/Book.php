@@ -5,21 +5,25 @@ namespace App\Entity;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use Doctrine\DBAL\Types\Types;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
-
 use App\Repository\BookRepository;
+use ApiPlatform\Metadata\ApiFilter;
+
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use Doctrine\Common\Collections\ArrayCollection;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\Valid;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ApiResource(
+    paginationItemsPerPage: 10,
+    paginationMaximumItemsPerPage:10,
     operations: [
         new GetCollection(normalizationContext: ['groups' => 'read:book:collection']),
         new Post(denormalizationContext: ['groups'=>'write:book:collection']),
@@ -27,6 +31,8 @@ use Symfony\Component\Validator\Constraints\Valid;
         new Delete()
     ]
 )]
+#[ApiFilter(OrderFilter::class, properties: ['title' => 'ASC'])]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'YearPublished' => 'exact', 'genre.name' => 'exact','author.name' => 'partial'])]
 class Book
 {
     #[ORM\Id]

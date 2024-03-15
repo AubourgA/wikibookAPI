@@ -14,6 +14,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: LoanRepository::class)]
 #[ApiResource(
+    paginationItemsPerPage: 10,
+    paginationMaximumItemsPerPage:10,
     operations: [
         new GetCollection(normalizationContext:['groups'=>'read:loan:collection']),
         new Post(),
