@@ -12,10 +12,12 @@ use ApiPlatform\Metadata\ApiFilter;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+use App\Controller\GetOnLineBookController;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -25,12 +27,19 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationItemsPerPage: 10,
     paginationMaximumItemsPerPage:10,
     operations: [
-        new GetCollection(normalizationContext: ['groups' => ['read:book:collection'] ]),
         new Post(denormalizationContext: ['groups'=>'write:book:collection']),
-        new Get(normalizationContext: ['groups' => ['read:book:item'] ]),
-        new Delete()
+        new Get(normalizationContext: ['groups' => ['read:book:item','read:book:global'] ]),
+        new Delete(),
+        // new GetCollection(
+        //     name:'online',
+        //     uriTemplate:'/online/books',
+        //     normalizationContext: ['groups' => ['read:book:collection']],
+        //     controller: GetOnLineBookController::class
+        // )
+        new GetCollection(normalizationContext: ['groups' => ['read:book:collection','read:book:global'] ])
     ]
 )]
+#[ApiFilter(BooleanFilter::class, properties: ['isOnLine'])]
 #[ApiFilter(OrderFilter::class, properties: ['title' => 'ASC'])]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'YearPublished' => 'exact', 'genre.name' => 'exact','author.name' => 'partial'])]
 class Book
@@ -116,6 +125,11 @@ class Book
     #[ORM\OneToMany(targetEntity: BookCopy::class, mappedBy: 'book', cascade: ['remove'])]
     #[Groups(['read:book:item'])]
     private Collection $bookCopies;
+
+    #[ORM\Column]
+    #[Assert\NotBlank()]
+    #[Groups(['write:book:collection', 'read:book:global'])]
+    private ?bool $isOnLine = null;
 
     public function __construct()
     {
@@ -261,6 +275,18 @@ class Book
                 $bookCopy->setBook(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isIsOnLine(): ?bool
+    {
+        return $this->isOnLine;
+    }
+
+    public function setIsOnLine(bool $isOnLine): static
+    {
+        $this->isOnLine = $isOnLine;
 
         return $this;
     }
