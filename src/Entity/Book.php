@@ -30,16 +30,17 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(denormalizationContext: ['groups'=>'write:book:collection']),
         new Get(normalizationContext: ['groups' => ['read:book:item','read:book:global'] ]),
         new Delete(),
-        // new GetCollection(
-        //     name:'online',
-        //     uriTemplate:'/online/books',
-        //     normalizationContext: ['groups' => ['read:book:collection']],
-        //     controller: GetOnLineBookController::class
-        // )
+        new GetCollection(
+            name:'online',
+            uriTemplate:'/online/books',
+            normalizationContext: ['groups' => ['read:book:collection']],
+            controller: GetOnLineBookController::class,
+            filters: [ 'book.search_filter' ]
+        ),
         new GetCollection(normalizationContext: ['groups' => ['read:book:collection','read:book:global'] ])
     ]
 )]
-#[ApiFilter(BooleanFilter::class, properties: ['isOnLine'])]
+// #[ApiFilter(BooleanFilter::class, properties: ['isOnLine'])]
 #[ApiFilter(OrderFilter::class, properties: ['title' => 'ASC'])]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'YearPublished' => 'exact', 'genre.name' => 'exact','author.name' => 'partial'])]
 class Book
@@ -68,7 +69,7 @@ class Book
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank()]
     #[Assert\Length(max:750, maxMessage: 'Le message ne doit pas dépasser {{ limit }} caracteres')]
-    #[Groups(['read:book:item','write:book:collection'])]
+    #[Groups(['read:book:collection','read:book:item','write:book:collection'])]
     private ?string $synopsys = null;
 
     #[ORM\Column]
