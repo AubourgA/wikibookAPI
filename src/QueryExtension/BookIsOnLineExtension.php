@@ -5,12 +5,19 @@ namespace App\QueryExtension;
 use App\Entity\Book;
 use Doctrine\ORM\QueryBuilder;
 use ApiPlatform\Metadata\Operation;
+use Symfony\Bundle\SecurityBundle\Security;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
+use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 
 class BookIsOnLineExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
+
+    public function __construct(private Security $security)
+    {
+    }
+
+
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
       $this->findBookisOnLineWhere($resourceClass, $queryBuilder);
@@ -34,6 +41,10 @@ class BookIsOnLineExtension implements QueryCollectionExtensionInterface, QueryI
            if(Book::class !== $resourceClass) {
             return;
            }
+
+           if ($this->security->isGranted('ROLE_ADMIN')) {
+            return; // Laisser passer les requêtes pour l'administrateur
+        }
     
            //creer le querybuilder pour la logic
            //reuperer l'ensemble des enregistrement est filtrer avec le pararmetre isOnLine

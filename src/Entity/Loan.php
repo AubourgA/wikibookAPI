@@ -17,10 +17,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
     paginationItemsPerPage: 10,
     paginationMaximumItemsPerPage:10,
     operations: [
-        new GetCollection(normalizationContext:['groups'=>'read:loan:collection']),
-        new Post(),
-        new Get(normalizationContext:['groups'=>'read:loan:item']),
-        new Patch( denormalizationContext:['groups'=> 'write:loan:item'])
+        new GetCollection( security: "is_granted('ROLE_ADMIN')", normalizationContext:['groups'=>'read:loan:collection']),
+        new Post(security: "is_granted('ROLE_USER')"),
+        new Get( security: "is_granted('ROLE_USER')", normalizationContext:['groups'=>'read:loan:item']),
+        new Patch( security: "is_granted('ROLE_ADMIN') or object.user == user", denormalizationContext:['groups'=> 'write:loan:item'])
     ]
 )]
 class Loan

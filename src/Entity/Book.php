@@ -30,9 +30,9 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationMaximumItemsPerPage:10,
     operations: [
         new GetCollection(normalizationContext: ['groups' => ['read:book:collection','read:book:global'] ]),
-        new Post(denormalizationContext: ['groups'=>'write:book:collection']),
+        new Post( security: "is_granted('ROLE_ADMIN')", denormalizationContext: ['groups'=>'write:book:collection']),
         new Get(normalizationContext: ['groups' => ['read:book:item','read:book:global'] ]),
-        new Delete()
+        new Delete(security: "is_granted('ROLE_ADMIN')",)
     ]
 )]
 
