@@ -12,8 +12,10 @@ use ApiPlatform\Metadata\ApiFilter;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+
 use App\Controller\GetOnLineBookController;
 use Doctrine\Common\Collections\Collection;
+use App\Controller\GetOnLineItemBookController;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
@@ -27,22 +29,16 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationItemsPerPage: 10,
     paginationMaximumItemsPerPage:10,
     operations: [
-        new Post(denormalizationContext: ['groups'=>'write:book:collection']),
+        new GetCollection(normalizationContext: ['groups' => ['read:book:collection','read:book:global'] ]),
+        new Post( security: "is_granted('ROLE_ADMIN')", denormalizationContext: ['groups'=>'write:book:collection']),
         new Get(normalizationContext: ['groups' => ['read:book:item','read:book:global'] ]),
-        new Delete(),
-        new GetCollection(
-            name:'online',
-            uriTemplate:'/online/books',
-            normalizationContext: ['groups' => ['read:book:collection']],
-            controller: GetOnLineBookController::class,
-            filters: [ 'book.search_filter' ]
-        ),
-        new GetCollection(normalizationContext: ['groups' => ['read:book:collection','read:book:global'] ])
+        new Delete(security: "is_granted('ROLE_ADMIN')",)
     ]
 )]
-// #[ApiFilter(BooleanFilter::class, properties: ['isOnLine'])]
+
 #[ApiFilter(OrderFilter::class, properties: ['title' => 'ASC'])]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'YearPublished' => 'exact', 'genre.name' => 'exact','author.name' => 'partial'])]
+
 class Book
 {
     #[ORM\Id]
@@ -129,6 +125,7 @@ class Book
 
     #[ORM\Column]
     #[Assert\NotBlank()]
+    #[ApiFilter(BooleanFilter::class, properties: ['isOnLine'])]
     #[Groups(['write:book:collection', 'read:book:global'])]
     private ?bool $isOnLine = null;
 

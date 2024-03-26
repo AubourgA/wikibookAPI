@@ -13,9 +13,19 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        
+
         main:
             lazy: true
             provider: app_user_provider
+            stateless: true
+            json_login:
+                check_path: /auth # The name in routes.yaml is enough for mapping
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            jwt: ~
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -26,8 +36,14 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        # - { path: ^/api/books, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/editor, roles: ROLE_ADMIN }
+        - { path: ^/api/author, roles: ROLE_ADMIN }
+        - { path: ^/api/genre, roles: ROLE_ADMIN }
+        - { path: ^/api/language, roles: ROLE_ADMIN }
+        - { path: ^/api/nationalities, roles: ROLE_ADMIN }
+        - { path: ^/api/status, roles: ROLE_ADMIN }
+        - { path: ^/api, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

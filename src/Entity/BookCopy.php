@@ -19,11 +19,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: BookCopyRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(normalizationContext: ['groups'=>'read:bookcopy:collection']),
-        new Post(),
-        new Get(normalizationContext: ['groups'=>'read:bookcopy:item']),
-        new Patch(denormalizationContext: ['groups'=> 'write:bookcopy:item']),
-        new Delete()
+        new GetCollection( security: "is_granted('ROLE_ADMIN')", normalizationContext: ['groups'=>'read:bookcopy:collection']),
+        new Post(security: "is_granted('ROLE_ADMIN')"),
+        new Get( security: "is_granted('ROLE_USER')",normalizationContext: ['groups'=>'read:bookcopy:item']),
+        new Patch( security: "is_granted('ROLE_ADMIN')", denormalizationContext: ['groups'=> 'write:bookcopy:item']),
+        new Delete(security: "is_granted('ROLE_ADMIN')",)
     ]
 )]
 class BookCopy
