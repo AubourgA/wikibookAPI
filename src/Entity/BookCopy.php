@@ -22,8 +22,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection( security: "is_granted('ROLE_ADMIN')", normalizationContext: ['groups'=>'read:bookcopy:collection']),
         new Post(security: "is_granted('ROLE_ADMIN')"),
         new Get( security: "is_granted('ROLE_USER')",normalizationContext: ['groups'=>'read:bookcopy:item']),
-        new Patch( security: "is_granted('ROLE_ADMIN')", denormalizationContext: ['groups'=> 'write:bookcopy:item']),
-        new Delete(security: "is_granted('ROLE_ADMIN')",)
+        new Patch( security: "is_granted('ROLE_USER')", denormalizationContext: ['groups'=> 'write:bookcopy:item']),
+        new Delete(security: "is_granted('ROLE_ADMIN')")
     ]
 )]
 class BookCopy
