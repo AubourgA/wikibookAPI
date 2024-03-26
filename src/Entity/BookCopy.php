@@ -45,6 +45,7 @@ class BookCopy
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank()]
     #[Groups(['read:bookcopy:collection','read:bookcopy:item','read:book:item'])]
+    #[Assert\LessThanOrEqual('today')]
     private ?\DateTimeInterface $serviceDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookCopies')]

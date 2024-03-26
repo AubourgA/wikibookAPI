@@ -11,6 +11,7 @@ use App\Repository\LoanRepository;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LoanRepository::class)]
 #[ApiResource(
@@ -33,10 +34,16 @@ class Loan
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item'])]
+    #[Assert\LessThanOrEqual('today')]
     private ?\DateTimeInterface $borrowDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['write:loan:item','read:loan:item','read:bookcopy:item'])]
+    #[Assert\LessThanOrEqual('today')]
+    #[Assert\Expression(
+        "this.getReturnDate() > this.getBorrowDate()",
+        message : "La date de retour doit être postérieure à la date d'emprunt."
+    )]
     private ?\DateTimeInterface $returnDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'loans')]
