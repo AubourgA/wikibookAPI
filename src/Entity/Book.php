@@ -12,10 +12,7 @@ use ApiPlatform\Metadata\ApiFilter;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
-
-use App\Controller\GetOnLineBookController;
 use Doctrine\Common\Collections\Collection;
-use App\Controller\GetOnLineItemBookController;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
