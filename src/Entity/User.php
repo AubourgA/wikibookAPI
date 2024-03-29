@@ -3,10 +3,17 @@
 namespace App\Entity;
 
 use DateTimeImmutable;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
+use App\State\UserPasswordHasher;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Bundle\SecurityBundle\Security;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -15,30 +22,42 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[ApiResource()]
+#[ApiResource(
+    operations: [
+        new GetCollection(security: "is_granted('ROLE_ADMIN')", normalizationContext: ['groups' => ['read:user:collection','read:user:item'] ]),
+        new Post(processor: UserPasswordHasher::class, denormalizationContext: ['groups' => ['create:user:item']]),
+        new Get(security: "is_granted('ROLE_USER') and object.isUser()", normalizationContext: ['groups' => ['read:user:item'] ]),
+        new Patch(security: "is_granted('ROLE_USER') and object.isUser()", denormalizationContext:['groups' => ['write:user:item']]),
+        new Delete(security: "is_granted('ROLE_ADMIN')",)
+    ]
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:user:collection','read:user:item' ])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
     #[Assert\Email(
         message: 'La valeur : {{ value }} n\' est pas un email valide.',
     )]
+    #[Groups(['read:user:collection','read:user:item', 'write:user:item','create:user:item' ])]
     private ?string $email = null;
 
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
+    #[Groups(['read:user:item'])]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups(('create:user:item'))]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
@@ -47,7 +66,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         pattern: '/^[a-zA-Z]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
-    #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item'])]
+    #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item','read:user:item','create:user:item'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
@@ -56,7 +75,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         pattern: '/^[a-zA-Z]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
-    #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item'])]
+    #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item','read:user:item','create:user:item'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 100, nullable: true)]
@@ -64,6 +83,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         pattern: '/^(?:\+33|0)[1-9](?:\d\s?){8}$/',
         match:true,
         message: 'Le champs doit etre que de type numero de telehpone')]
+    #[Groups(['read:user:item', 'write:user:item','create:user:item' ])]
     private ?string $numPortable = null;
 
     #[ORM\Column(length: 100, nullable: true)]
@@ -71,13 +91,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         pattern: '/^[a-zA-Z]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
+    #[Groups(['read:user:item', 'write:user:item','create:user:item' ])]   
     private ?string $city = null;
 
     #[ORM\Column]
     #[Assert\NotBlank()]
+    #[Groups(['read:user:collection'])]
     private ?\DateTimeImmutable $subscribedAt = null;
 
     #[ORM\Column]
+    #[Groups(['read:user:collection'])]
     private ?bool $isActive = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -86,7 +109,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Loan::class, mappedBy: 'user')]
     private Collection $loans;
 
-    public function __construct()
+    public function __construct(private ?Security $security = null)
     {
         $this->isActive = 1;
         $this->loans = new ArrayCollection();
@@ -226,6 +249,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->subscribedAt = $subscribedAt;
 
         return $this;
+    }
+
+    public function isUser(?UserInterface $user = null): bool
+    {
+        return $user instanceof self && $user->id === $this->id;
     }
 
     public function isIsActive(): ?bool

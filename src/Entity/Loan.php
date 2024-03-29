@@ -20,8 +20,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new GetCollection( security: "is_granted('ROLE_ADMIN')", normalizationContext:['groups'=>'read:loan:collection']),
         new Post(security: "is_granted('ROLE_USER')"),
-        new Get( security: "is_granted('ROLE_USER')", normalizationContext:['groups'=>'read:loan:item']),
-        new Patch( security: "is_granted('ROLE_ADMIN') or object.user == user", denormalizationContext:['groups'=> 'write:loan:item'])
+        new Get( security: "is_granted('ROLE_USER') and object.getUser() == user", normalizationContext:['groups'=>'read:loan:item']),
+        new Patch( security: "is_granted('ROLE_ADMIN') or object.getUser() == user", denormalizationContext:['groups'=> 'write:loan:item'])
     ]
 )]
 class Loan
@@ -41,7 +41,7 @@ class Loan
     #[Groups(['write:loan:item','read:loan:item','read:bookcopy:item'])]
     #[Assert\LessThanOrEqual('today')]
     #[Assert\Expression(
-        "this.getReturnDate() > this.getBorrowDate()",
+        "this.getReturnDate() === null or this.getReturnDate() > this.getBorrowDate()",
         message : "La date de retour doit être postérieure à la date d'emprunt."
     )]
     private ?\DateTimeInterface $returnDate = null;
