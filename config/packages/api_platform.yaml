@@ -4,6 +4,7 @@ api_platform:
     show_webby: false
     formats:
         jsonld: ['application/ld+json']
+        json: ['application/json']
     docs_formats:
         jsonld: ['application/ld+json']
         jsonopenapi: ['application/vnd.openapi+json']
@@ -11,7 +12,7 @@ api_platform:
     defaults:
         stateless: true
         cache_headers:
-            vary: ['Content-Type', 'Authorization', 'Origin']
+            vary: ['Content-Type', 'Accept','Authorization', 'Origin']
         extra_properties:
             standard_put: true
             rfc_7807_compliant_errors: true
@@ -22,3 +23,8 @@ api_platform:
                 type: header
     event_listeners_backward_compatibility_layer: false
     keep_legacy_inflector: false
+    mapping:
+        paths: 
+            - '%kernel.project_dir%/src/Entity' # Assurez-vous d'inclure les entités
+            - '%kernel.project_dir%/src/Dto'    # Assurez-vous d'inclure les DTO
+            - '%kernel.project_dir%/src/State' 
