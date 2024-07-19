@@ -14,7 +14,6 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         
-
         main:
             lazy: true
             provider: app_user_provider
