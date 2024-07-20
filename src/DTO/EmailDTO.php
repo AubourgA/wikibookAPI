@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dto;
+namespace App\DTO;
 
 use App\State\SendEmailProcessor;
 use ApiPlatform\Metadata\Post;
