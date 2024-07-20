@@ -2,7 +2,7 @@
 
 namespace App\State;
 
-use App\DTO\EmailDTO;
+
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use Symfony\Component\Mailer\MailerInterface;
