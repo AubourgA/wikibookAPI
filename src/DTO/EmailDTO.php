@@ -28,14 +28,18 @@ use Symfony\Component\Validator\Constraints as Assert;
                             'schema' => [
                                 'type' => 'object',
                                 'properties' => [
+                                    'lastname' => [
+                                        'type' => 'string',
+                                        'example' => 'nom'
+                                    ],
+                                    'firstname' => [
+                                        'type' => 'string',
+                                        'example' => 'nom'
+                                    ],
                                     'email' => [
                                         'type' => 'string',
                                         'example' => 'example@example.com'
                                     ],
-                                    // 'subject' => [
-                                    //     'type' => 'string',
-                                    //     'example' => 'Subject of the email'
-                                    // ],
                                     'message' => [
                                         'type' => 'string',
                                         'example' => 'Message body of the email'
@@ -61,12 +65,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 final class EmailDTO
 {
+
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z\s]+$/",
+        message: "L'input ne doit contenir que des lettres."
+    )]
+    public $lastname;
+
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z\s]+$/",
+        message: "L'input ne doit contenir que des lettres."
+    )]
+    public $firstname;
+
     #[Assert\NotBlank]
     #[Assert\Email]
     public $email;
-
-    // #[Assert\NotBlank]
-    // public $subject;
 
     #[Assert\NotBlank]
     public $message;

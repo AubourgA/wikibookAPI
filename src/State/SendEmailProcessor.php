@@ -30,14 +30,14 @@ final class SendEmailProcessor implements ProcessorInterface
             $errorsString = (string) $errors;
             throw new HttpException(400, $errorsString);
         }
-        
+      
     
         // Send the email
         $email = (new Email())
             ->from($_ENV['FROM_MAILER'])
             ->to($data->email)
             ->subject("vous avez recu un nouveau message")
-            ->text($data->message);
+            ->text("Nom : ".$data->lastname."Prenom : ".$data->firstname." Message :". $data->message);
 
         $this->mailer->send($email);
     }
