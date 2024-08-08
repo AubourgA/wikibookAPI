@@ -23,8 +23,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ApiResource(
-    paginationItemsPerPage: 10,
-    paginationMaximumItemsPerPage:10,
+    paginationItemsPerPage: 12,
+    paginationMaximumItemsPerPage:12,
     operations: [
         new GetCollection(normalizationContext: ['groups' => ['read:book:collection','read:book:global'] ]),
         new Post( security: "is_granted('ROLE_ADMIN')", denormalizationContext: ['groups'=>'write:book:collection']),
