@@ -92,6 +92,7 @@ class Book
     #[Groups(['read:editor:item',
                 'read:genre:item',
                 'read:language:item',
+                'read:book:collection',
                 'read:book:item','write:book:collection'],
     ),
     Valid()]
@@ -99,7 +100,7 @@ class Book
 
     #[ORM\ManyToOne(inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['read:book:item','write:book:collection']),
+    #[Groups(['read:book:collection','read:book:item','write:book:collection']),
     Valid()]
     private ?Genre $genre = null;
 

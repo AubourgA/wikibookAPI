@@ -50,6 +50,7 @@ class Author
               'read:genre:item',
               'read:language:item',
               'read:nationalities:item',
+              'read:book:collection',
               'read:book:item',
               'write:book:collection'
             ]),
@@ -73,6 +74,7 @@ class Author
               'read:genre:item',
               'read:language:item',
               'read:nationalities:item',
+              'read:book:collection',
               'read:book:item','write:book:collection'])] 
     private ?string $firstname = null;
 
