@@ -38,7 +38,7 @@ class Genre
         pattern: '/^[a-zA-Z]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
-    #[Groups(['read:genre:collection','read:genre:item','write:genre:item','read:book:item'])]
+    #[Groups(['read:genre:collection','read:genre:item','write:genre:item','read:book:collection','read:book:item'])]
     private ?string $name = null;
 
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'genre')]
