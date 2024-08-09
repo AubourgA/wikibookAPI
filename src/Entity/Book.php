@@ -34,7 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 
 #[ApiFilter(OrderFilter::class, properties: ['title' => 'ASC'])]
-#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'YearPublished' => 'exact', 'genre.name' => 'exact','author.name' => 'partial'])]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'ISBN' => 'partial', 'YearPublished' => 'exact', 'genre.name' => 'exact','author.name' => 'partial'])]
 
 class Book
 {
