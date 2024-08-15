@@ -122,7 +122,6 @@ class Book
     private Collection $bookCopies;
 
     #[ORM\Column]
-    #[Assert\NotBlank()]
     #[ApiFilter(BooleanFilter::class, properties: ['isOnLine'])]
     #[Groups(['write:book:collection', 'read:book:global'])]
     private ?bool $isOnLine = null;
