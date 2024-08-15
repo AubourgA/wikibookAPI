@@ -34,7 +34,7 @@ class Editor
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
     #[Assert\Regex(
-        pattern: '/^[a-zA-Z]+$/',
+        pattern: '/^[a-zA-Z\s]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
     #[Groups(['read:editor:collection','read:editor:item','write:editor:item','read:book:item'])]
