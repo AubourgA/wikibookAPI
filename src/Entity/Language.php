@@ -35,7 +35,7 @@ class Language
     #[Assert\NotBlank()]
     #[Assert\Length(min:4)]
     #[Assert\Regex(
-        pattern: '/^[a-zA-Z]+$/',
+        pattern: '/^[a-zA-Z\s]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
     #[Groups(['read:language:collection','read:language:item','read:book:item'])]

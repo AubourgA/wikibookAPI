@@ -33,7 +33,7 @@ class Nationality
     #[ORM\Column(length: 255)]
     #[Groups(['read:author:item','read:nationalities:collection','read:nationalities:item','write:nationalities:item'])] 
     #[Assert\Regex(
-        pattern: '/^[a-zA-Z]+$/',
+        pattern: '/^[a-zA-Z\s]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
     private ?string $country = null;

@@ -35,7 +35,7 @@ class Genre
     #[Assert\NotBlank()]
     #[Assert\Length(min:4)]
     #[Assert\Regex(
-        pattern: '/^[a-zA-Z]+$/',
+        pattern: '/^[a-zA-Z\s]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
     #[Groups(['read:genre:collection','read:genre:item','write:genre:item','read:book:collection','read:book:item'])]

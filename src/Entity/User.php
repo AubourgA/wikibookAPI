@@ -63,7 +63,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
     #[Assert\Regex(
-        pattern: '/^[a-zA-Z]+$/',
+        pattern: '/^[a-zA-Z\s]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
     #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item','read:user:item','create:user:item'])]
@@ -72,7 +72,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
     #[Assert\Regex(
-        pattern: '/^[a-zA-Z]+$/',
+        pattern: '/^[a-zA-Z\s]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
     #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item','read:user:item','create:user:item'])]
@@ -88,7 +88,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 100, nullable: true)]
     #[Assert\Regex(
-        pattern: '/^[a-zA-Z]+$/',
+        pattern: '/^[a-zA-Z\s]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
     #[Groups(['read:user:item', 'write:user:item','create:user:item' ])]   
