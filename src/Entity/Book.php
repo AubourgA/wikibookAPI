@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
 use Doctrine\DBAL\Types\Types;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
@@ -29,7 +30,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection(normalizationContext: ['groups' => ['read:book:collection','read:book:global'] ]),
         new Post( security: "is_granted('ROLE_ADMIN')", denormalizationContext: ['groups'=>'write:book:collection']),
         new Get(normalizationContext: ['groups' => ['read:book:item','read:book:global'] ]),
-        new Delete(security: "is_granted('ROLE_ADMIN')",)
+        new Delete(security: "is_granted('ROLE_ADMIN')"),
+        new Patch(security: "is_granted('ROLE_ADMIN')"),
     ]
 )]
 
