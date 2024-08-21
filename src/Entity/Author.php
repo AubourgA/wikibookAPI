@@ -3,6 +3,8 @@
 namespace App\Entity;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Put;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\AuthorRepository;
@@ -26,9 +28,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
         new Get(normalizationContext:['groups' => ['read:author:item']                                                   
             ]
         ),
-        new Post(
+        new Post(security: "is_granted('ROLE_ADMIN')",
             denormalizationContext:['groups' => ['create:author:collection'] ]                                         
-        )
+        ),
+        new Delete(security: "is_granted('ROLE_ADMIN')"),
+        new Put(security: "is_granted('ROLE_ADMIN')"),
     ]
 
 )]
