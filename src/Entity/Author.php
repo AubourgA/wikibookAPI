@@ -9,7 +9,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\AuthorRepository;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -36,7 +38,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
     ]
 
 )]
-
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'partial'] )]
 #[UniqueEntity(fields: ['name', 'firstname'], message: 'Le nom et le prénom doivent être uniques.')]
 class Author
 {
