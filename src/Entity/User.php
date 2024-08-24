@@ -5,13 +5,13 @@ namespace App\Entity;
 use DateTimeImmutable;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
 use App\State\UserPasswordHasher;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Bundle\SecurityBundle\Security;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,7 +27,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
         new GetCollection(security: "is_granted('ROLE_ADMIN')", normalizationContext: ['groups' => ['read:user:collection','read:user:item'] ]),
         new Post(processor: UserPasswordHasher::class, denormalizationContext: ['groups' => ['create:user:item']]),
         new Get(security: "is_granted('ROLE_USER') and object.isUser()", normalizationContext: ['groups' => ['read:user:item'] ]),
-        new Patch(security: "is_granted('ROLE_USER') and object.isUser()", denormalizationContext:['groups' => ['write:user:item']]),
+        new Put(security: "is_granted('ROLE_USER') and object.isUser()", denormalizationContext:['groups' => ['write:user:item']]),
         new Delete(security: "is_granted('ROLE_ADMIN')",)
     ]
 )]

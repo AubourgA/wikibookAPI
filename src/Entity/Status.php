@@ -4,11 +4,11 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Patch;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\StatusRepository;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -19,8 +19,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new GetCollection( normalizationContext: ['groups' => 'read:status:collection']),
         new Get( normalizationContext:['groups'=> 'read:status:item']),
-        new Post(),
-        new Patch( denormalizationContext:['groups' => 'write:status:item'])
+        new Post(security: "is_granted('ROLE_ADMIN')"),
+        new Put(security: "is_granted('ROLE_ADMIN')"),
     ]
 )]
 class Status
@@ -39,7 +39,6 @@ class Status
         message: 'Le champs doit etre que des lettres')]
     #[Groups(['read:status:collection',
                 'read:status:item',
-                'write:status:item',
                 'read:bookcopy:item',
                 'write:bookcopy:item'])]
     private ?string $type = null;

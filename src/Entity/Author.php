@@ -63,14 +63,14 @@ class Author
       Length(min:3)
     ]  
     #[Assert\Regex(
-        pattern: '/^[a-zA-Z]+$/',
+        pattern: '/^[a-zA-Z\s]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Regex(
-        pattern: '/^[a-zA-Z]+$/',
+        pattern: '/^[a-zA-Z\s]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
     #[Groups(['read:author:collection',

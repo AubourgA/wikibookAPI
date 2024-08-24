@@ -4,34 +4,39 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Patch;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
 use App\Repository\NationalityRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
 #[ORM\Entity(repositoryClass: NationalityRepository::class)]
 #[ApiResource(
     operations: [
         new GetCollection( normalizationContext: ['groups' => 'read:nationalities:collection']),
         new Get( normalizationContext:['groups'=> 'read:nationalities:item']),
-        new Post(),
-        new Patch( denormalizationContext:['groups' => 'write:nationalities:item'])
+        new Post(security: "is_granted('ROLE_ADMIN')"),
+        new Put(security: "is_granted('ROLE_ADMIN')"),
     ]
 )]
+
+#[ApiFilter(SearchFilter::class, properties: ['country' => 'partial'] )]
 class Nationality
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:nationalities:collection','read:nationnalities:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read:author:item','read:nationalities:collection','read:nationalities:item','write:nationalities:item'])] 
+    #[Groups(['read:author:item','read:nationalities:collection','read:nationalities:item'])] 
     #[Assert\Regex(
         pattern: '/^[a-zA-Z\s]+$/',
         match:true,

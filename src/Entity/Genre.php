@@ -4,25 +4,30 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Patch;
+
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\GenreRepository;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+
 
 #[ORM\Entity(repositoryClass: GenreRepository::class)]
 #[ApiResource(
     operations: [
         new GetCollection(normalizationContext: ['groups'=> 'read:genre:collection']),
         new Get(normalizationContext: ['groups' => 'read:genre:item']),
-        new Post(),
-        new Patch(denormalizationContext: ['groups' => 'write:genre:item'])
+        new Post(security: "is_granted('ROLE_ADMIN')"),
+        new Put(security: "is_granted('ROLE_ADMIN')"),
     ]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'partial'] )]
 class Genre
 {
     #[ORM\Id]
