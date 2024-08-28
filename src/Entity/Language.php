@@ -75,35 +75,7 @@ class Language
         return $this;
     }
 
-    /**
-     * @return Collection<int, Book>
-     */
-    public function getBooks(): Collection
-    {
-        return $this->books;
-    }
 
-    public function addBook(Book $book): static
-    {
-        if (!$this->books->contains($book)) {
-            $this->books->add($book);
-            $book->setLanguage($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBook(Book $book): static
-    {
-        if ($this->books->removeElement($book)) {
-            // set the owning side to null (unless already changed)
-            if ($book->getLanguage() === $this) {
-                $book->setLanguage(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, BookCopy>
