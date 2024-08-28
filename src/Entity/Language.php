@@ -49,9 +49,13 @@ class Language
     #[Groups(['read:language:item'])]
     private Collection $books;
 
+    #[ORM\OneToMany(targetEntity: BookCopy::class, mappedBy: 'Language')]
+    private Collection $bookCopies;
+
     public function __construct()
     {
         $this->books = new ArrayCollection();
+        $this->bookCopies = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -95,6 +99,36 @@ class Language
             // set the owning side to null (unless already changed)
             if ($book->getLanguage() === $this) {
                 $book->setLanguage(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BookCopy>
+     */
+    public function getBookCopies(): Collection
+    {
+        return $this->bookCopies;
+    }
+
+    public function addBookCopy(BookCopy $bookCopy): static
+    {
+        if (!$this->bookCopies->contains($bookCopy)) {
+            $this->bookCopies->add($bookCopy);
+            $bookCopy->setLanguage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBookCopy(BookCopy $bookCopy): static
+    {
+        if ($this->bookCopies->removeElement($bookCopy)) {
+            // set the owning side to null (unless already changed)
+            if ($bookCopy->getLanguage() === $this) {
+                $bookCopy->setLanguage(null);
             }
         }
 

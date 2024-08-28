@@ -58,6 +58,10 @@ class BookCopy
     #[Groups(['read:bookcopy:item'])]
     private Collection $loans;
 
+    #[ORM\ManyToOne(inversedBy: 'bookCopies')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Language $Language = null;
+
     public function __construct()
     {
         $this->loans = new ArrayCollection();
@@ -130,6 +134,18 @@ class BookCopy
                 $loan->setBookCopy(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLanguage(): ?Language
+    {
+        return $this->Language;
+    }
+
+    public function setLanguage(?Language $Language): static
+    {
+        $this->Language = $Language;
 
         return $this;
     }

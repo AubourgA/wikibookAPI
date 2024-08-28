@@ -115,12 +115,7 @@ class Book
     Valid()]
     private ?Editor $editor = null;
 
-    #[ORM\ManyToOne(inversedBy: 'books')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotBlank()]
-    #[Groups(['read:book:item','write:book:collection']),
-    Valid()]
-    private ?Language $language = null;
+ 
 
     #[ORM\OneToMany(targetEntity: BookCopy::class, mappedBy: 'book', cascade: ['remove'])]
     #[Groups(['read:book:item'])]
@@ -242,17 +237,6 @@ class Book
         return $this;
     }
 
-    public function getLanguage(): ?Language
-    {
-        return $this->language;
-    }
-
-    public function setLanguage(?Language $language): static
-    {
-        $this->language = $language;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, BookCopy>

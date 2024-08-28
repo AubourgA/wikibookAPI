@@ -28,7 +28,6 @@ class BookFixtures extends Fixture implements DependentFixtureInterface
                 ->setAuthor($this->getReference($faker->numberBetween(1,99)))
                 ->setGenre($this->getReference($faker->randomElement($Genres)))
                 ->setEditor($this->getReference($faker->randomElement($Editors)))
-                ->setLanguage($this->getReference($faker->randomElement($Languages)))
                 ->setIsOnLine(1);
                 
                 $manager->persist($author);
