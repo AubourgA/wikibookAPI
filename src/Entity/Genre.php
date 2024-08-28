@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-
+use ApiPlatform\Metadata\Patch;
 
 #[ORM\Entity(repositoryClass: GenreRepository::class)]
 #[ApiResource(
@@ -24,7 +24,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
         new GetCollection(normalizationContext: ['groups'=> 'read:genre:collection']),
         new Get(normalizationContext: ['groups' => 'read:genre:item']),
         new Post(security: "is_granted('ROLE_ADMIN')"),
-        new Put(security: "is_granted('ROLE_ADMIN')"),
+        new Patch(security: "is_granted('ROLE_ADMIN')"),
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['name' => 'partial'] )]

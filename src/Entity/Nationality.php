@@ -15,6 +15,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\Patch;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: NationalityRepository::class)]
 #[ApiResource(
@@ -22,11 +24,12 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
         new GetCollection( normalizationContext: ['groups' => 'read:nationalities:collection']),
         new Get( normalizationContext:['groups'=> 'read:nationalities:item']),
         new Post(security: "is_granted('ROLE_ADMIN')"),
-        new Put(security: "is_granted('ROLE_ADMIN')"),
+        new Patch(security: "is_granted('ROLE_ADMIN')"),
     ]
 )]
 
 #[ApiFilter(SearchFilter::class, properties: ['country' => 'partial'] )]
+#[UniqueEntity(fields: ['country'], message: 'Le pays existe déja.')]
 class Nationality
 {
     #[ORM\Id]

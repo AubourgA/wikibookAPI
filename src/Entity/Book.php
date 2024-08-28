@@ -18,6 +18,8 @@ use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Metadata\Patch;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -31,13 +33,14 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post( security: "is_granted('ROLE_ADMIN')", denormalizationContext: ['groups'=>'write:book:collection']),
         new Get(normalizationContext: ['groups' => ['read:book:item','read:book:global'] ]),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
-        new Put(security: "is_granted('ROLE_ADMIN')"),
+        // new Put(security: "is_granted('ROLE_ADMIN')"),
+        new Patch(security: "is_granted('ROLE_ADMIN')"),
     ]
 )]
 
 #[ApiFilter(OrderFilter::class, properties: ['title' => 'ASC'])]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'ISBN' => 'partial', 'YearPublished' => 'exact', 'genre.name' => 'exact','author.name' => 'partial'])]
-
+#[UniqueEntity(fields: ['ISBN'], message: 'ISBN déja utilisé')]
 class Book
 {
     #[ORM\Id]
@@ -128,9 +131,14 @@ class Book
     #[Groups(['write:book:collection', 'read:book:global'])]
     private ?bool $isOnLine = null;
 
+    #[ORM\Column]
+    #[Groups(['read:book:collection','read:book:item'])]
+    private ?\DateTimeImmutable $createdAt = null;
+
     public function __construct()
     {
         $this->bookCopies = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -284,6 +292,18 @@ class Book
     public function setIsOnLine(bool $isOnLine): static
     {
         $this->isOnLine = $isOnLine;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
