@@ -41,6 +41,7 @@ class Status
     #[Groups(['read:status:collection',
                 'read:status:item',
                 'read:bookcopy:item',
+                'read:book:item',
                 'write:bookcopy:item'])]
     private ?string $type = null;
 
