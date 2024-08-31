@@ -31,7 +31,7 @@ class BookCopy
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:bookcopy:collection','read:bookcopy:item','read:book:item'])]
+    #[Groups(['read:bookcopy:collection','read:bookcopy:item','read:book:item','read:loan:collection'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookCopies')]
