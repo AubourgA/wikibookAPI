@@ -39,7 +39,7 @@ class BookCopy
     #[Groups(['read:bookcopy:collection',
             'read:bookcopy:item',
             'read:status:item',
-            'read:loan:item'])]
+            'read:loan:item', 'read:loan:collection'])]
     private ?Book $book = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]

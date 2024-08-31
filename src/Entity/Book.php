@@ -58,6 +58,7 @@ class Book
             'read:language:item',
             'read:status:item',
             'read:loan:item',
+            'read:loan:collection',
             'read:bookcopy:collection',
             'read:bookcopy:item',
             'read:author:item',
