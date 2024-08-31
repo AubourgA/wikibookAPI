@@ -22,14 +22,14 @@ class UpdateStatusBookCopy
     public function postPersist(PostPersistEventArgs $args): void
     {
         
-        $this->changeStatusOfBookCopy(6, $args);
+        $this->changeStatusOfBookCopy(4, $args);
       
     }
 
     
     public function postUpdate(PostUpdateEventArgs $args)
     {
-        $this->changeStatusOfBookCopy(4, $args);
+        $this->changeStatusOfBookCopy(6, $args);
     }
 
 
