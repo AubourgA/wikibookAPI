@@ -25,7 +25,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ApiResource(
     operations: [
-        new GetCollection(security: "is_granted('ROLE_ADMIN')", normalizationContext: ['groups' => ['read:user:collection','read:user:item'] ]),
+        new GetCollection(security: "is_granted('ROLE_ADMIN')", normalizationContext: ['groups' => ['read:user:collection'] ]),
         new Post(processor: UserPasswordHasher::class, denormalizationContext: ['groups' => ['create:user:item']]),
         new Get(security: "is_granted('ROLE_USER') and object.isUser()", normalizationContext: ['groups' => ['read:user:item'] ]),
         new Patch(security: "is_granted('ROLE_USER') and object.isUser()", denormalizationContext:['groups' => ['write:user:item']]),
@@ -51,14 +51,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var list<string> The user roles
      */
     #[ORM\Column]
-    #[Groups(['read:user:item'])]
+    #[Groups(['read:user:collection'])]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Groups(('create:user:item'))]
+    #[Groups(['create:user:item'])]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
@@ -108,6 +108,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $token = null;
 
     #[ORM\OneToMany(targetEntity: Loan::class, mappedBy: 'user')]
+    #[Groups(['read:user:collection','read:user:item'])]
     private Collection $loans;
 
     public function __construct(private ?Security $security = null)

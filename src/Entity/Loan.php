@@ -48,7 +48,7 @@ class Loan
 
     #[ORM\ManyToOne(inversedBy: 'loans')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['read:loan:item','write:loan:item'])]
+    #[Groups(['read:loan:item','write:loan:item','read:user:item'])]
     private ?BookCopy $bookCopy = null;
 
     #[ORM\ManyToOne(inversedBy: 'loans')]
