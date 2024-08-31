@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+
+
+
+use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
@@ -27,7 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Patch( security: "is_granted('ROLE_ADMIN') or object.getUser() == user", denormalizationContext:['groups'=> 'write:loan:item'])
     ]
 )]
-#[ApiFilter(DateFilter::class, properties: ['returnDate' ] )]
+#[ApiFilter(ExistsFilter::class, properties: ['returnDate'])]
 class Loan
 {
     #[ORM\Id]
