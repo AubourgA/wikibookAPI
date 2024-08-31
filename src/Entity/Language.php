@@ -45,16 +45,13 @@ class Language
     #[Groups(['read:language:collection','read:language:item','read:book:item'])]
     private ?string $name = null;
 
-    #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'language')]
-    #[Groups(['read:language:item'])]
-    private Collection $books;
+   
 
     #[ORM\OneToMany(targetEntity: BookCopy::class, mappedBy: 'Language')]
     private Collection $bookCopies;
 
     public function __construct()
     {
-        $this->books = new ArrayCollection();
         $this->bookCopies = new ArrayCollection();
     }
 

@@ -21,36 +21,36 @@ class UpdateStatusBookCopy
     
     public function postPersist(PostPersistEventArgs $args): void
     {
+        $this->changeStatusOfBookCopy(3, $args);
         
-        $this->changeStatusOfBookCopy(4, $args);
-      
     }
-
+    
     
     public function postUpdate(PostUpdateEventArgs $args)
     {
-        $this->changeStatusOfBookCopy(6, $args);
+        $this->changeStatusOfBookCopy(1, $args);
     }
-
-
-
+    
+    
+    
     public function changeStatusOfBookCopy($id, $args)
     {
         $entity = $args->getObject();
-
+        
         if (!$entity instanceof Loan) {
             return;
         }
-
+        
         $bookCopy = $entity->getBookCopy();
-       
+        
         $newStatus = $this->em->getRepository(Status::class)->find($id);
-     
+        
         if (!$newStatus) {
             throw new \Exception('Statut non trouvé');
         }
-
+        
         $bookCopy->setStatus($newStatus);
+        
 
         $this->em->persist($bookCopy);
         $this->em->flush();
