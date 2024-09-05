@@ -62,7 +62,8 @@ class Book
             'read:bookcopy:collection',
             'read:bookcopy:item',
             'read:author:item',
-            'write:book:collection'])]
+            'write:book:collection',
+            'read:user:item'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
