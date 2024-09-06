@@ -42,6 +42,7 @@ class Status
                 'read:status:item',
                 'read:bookcopy:item',
                 'read:book:item',
+                'read:book:collection',
                 'write:bookcopy:item'])]
     private ?string $type = null;
 
