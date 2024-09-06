@@ -120,7 +120,7 @@ class Book
  
 
     #[ORM\OneToMany(targetEntity: BookCopy::class, mappedBy: 'book', cascade: ['remove'])]
-    #[Groups(['read:book:item'])]
+    #[Groups(['read:book:item','read:book:collection'])]
     private Collection $bookCopies;
 
     #[ORM\Column]
