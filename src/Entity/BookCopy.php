@@ -52,7 +52,7 @@ class BookCopy
     #[ORM\ManyToOne(inversedBy: 'bookCopies')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank()]
-    #[Groups(['read:loan:item','read:bookcopy:item','read:book:item','write:bookcopy:item'])]
+    #[Groups(['read:loan:item','read:bookcopy:item','read:book:item','read:book:collection','write:bookcopy:item'])]
     private ?Status $status = null;
 
     #[ORM\OneToMany(targetEntity: Loan::class, mappedBy: 'bookCopy')]
