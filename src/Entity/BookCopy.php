@@ -61,7 +61,7 @@ class BookCopy
 
     #[ORM\ManyToOne(inversedBy: 'bookCopies')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['read:book:item'])]
+    #[Groups(['read:book:item','read:user:item'])]
     private ?Language $Language = null;
 
     public function __construct()

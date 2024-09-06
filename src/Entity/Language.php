@@ -42,7 +42,7 @@ class Language
         pattern: '/^[a-zA-Z\s]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
-    #[Groups(['read:language:collection','read:language:item','read:book:item'])]
+    #[Groups(['read:language:collection','read:language:item','read:book:item','read:user:item'])]
     private ?string $name = null;
 
    
