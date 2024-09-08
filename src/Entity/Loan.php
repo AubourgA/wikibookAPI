@@ -40,7 +40,7 @@ class Loan
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item','read:user:item'])]
-    #[Assert\LessThanOrEqual('today')]
+    #[Assert\LessThanOrEqual('today UTC')]
     private ?\DateTimeInterface $borrowDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
