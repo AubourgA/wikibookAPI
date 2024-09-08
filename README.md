@@ -40,7 +40,15 @@ La partie front est disponible sur ce repo : https://github.com/AubourgA/wikiBoo
    ```bash
    php bin/console doctrine:migrations:migrate
 
-5. Démarer le serveur Symfony :
+5. Générer la paire de clef jwt
+   1. Créer le dossier jwt dans bin/config
+   2. taper la commande suivante :
+      ```bash
+      php bin/console lexik:jwt:generate-keypair
+      
+    3. suivez les consignes pour créer la passphrase
+
+6. Démarer le serveur Symfony :
     ```bash
     symfony server:start
 
@@ -193,7 +201,7 @@ Cette route permet de récupérer les informations de l'utilisateur courant.
     "subscribedAt": "2022-01-01T12:00:00",
     "isActive": true
 }
-
+```
 
 ### Sécurité
 
