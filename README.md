@@ -1,6 +1,6 @@
 # Symfony API - API Platform
 
-Cette API est construite avec Symfony et API Platform pour gérer un ensemble de ressources liées à des auteurs, livres, copies de livres, éditeurs, et genres... Elle fait parti de l'app WIKIBOOK et regroupe les ressources nécessaires au bon fonctionnement de l'app.
+Cette API est construite avec Symfony et API Platform pour gérer un ensemble de ressources liées à des auteurs, livres, copies de livres, éditeurs, et genres... Elle fait partie de l'app WIKIBOOK et regroupe les ressources nécessaires au bon fonctionnement de l'app.
 
 La partie front est disponible sur ce repo : https://github.com/AubourgA/wikiBook
 
