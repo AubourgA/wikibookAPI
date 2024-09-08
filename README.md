@@ -1,6 +1,8 @@
 # Symfony API - API Platform
 
-Cette API est construite avec Symfony et API Platform pour gérer un ensemble de ressources liées à des auteurs, livres, copies de livres, éditeurs, et genres.
+Cette API est construite avec Symfony et API Platform pour gérer un ensemble de ressources liées à des auteurs, livres, copies de livres, éditeurs, et genres... Elle fait parti de l'app WIKIBOOK et regroupe les ressources nécessaires au bon fonctionnement de l'app.
+
+La partie front est disponible sur ce repo : https://github.com/AubourgA/wikiBook
 
 ## Fonctionnalités principales
 
@@ -25,12 +27,15 @@ Cette API est construite avec Symfony et API Platform pour gérer un ensemble de
 2. Installer les dépendance :
    ```bash
    composer install 
+
 3. Configurer la base de données dans le fichier .env :
    ```bash
   DATABASE_URL="mysql://username:password@127.0.0.1:3306/database_name"  
+
 4. Exécuter les migrations :
    ```bash
    php bin/console doctrine:migrations:migrate
+   
 5. Démarer le serveur Symfony :
     ```bash
     symfony server:start
