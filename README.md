@@ -34,7 +34,7 @@ La partie front est disponible sur ce repo : https://github.com/AubourgA/wikiBoo
 
 3. Configurer la base de données dans le fichier .env :
    ```bash
-  DATABASE_URL="mysql://username:password@127.0.0.1:3306/database_name"  
+   DATABASE_URL="mysql://username:password@127.0.0.1:3306/database_name"  
 
 4. Exécuter les migrations :
    ```bash
@@ -45,7 +45,7 @@ La partie front est disponible sur ce repo : https://github.com/AubourgA/wikiBoo
    2. taper la commande suivante :
       ```bash
       php bin/console lexik:jwt:generate-keypair
-      
+
     3. suivez les consignes pour créer la passphrase
 
 6. Démarer le serveur Symfony :
