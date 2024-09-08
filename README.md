@@ -48,7 +48,15 @@ La partie front est disponible sur ce repo : https://github.com/AubourgA/wikiBoo
 
     3. suivez les consignes pour créer la passphrase
 
-6. Démarer le serveur Symfony :
+6. Configurer dans le fichier `.env`  votre variable MAILER_DSN
+   ```bash
+   MAILER_DSN=smtp://votre_email:mot_de_passe@votre_serveur:port?verify_peer=0
+
+7. Configurer le mode CORS
+   ```bash
+   CORS_ALLOW_ORIGIN=^https?://localhost:PORT?$ 
+
+8. Démarer le serveur Symfony :
     ```bash
     symfony server:start
 
