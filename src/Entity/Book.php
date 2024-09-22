@@ -33,7 +33,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post( security: "is_granted('ROLE_ADMIN')", denormalizationContext: ['groups'=>'write:book:collection']),
         new Get(normalizationContext: ['groups' => ['read:book:item','read:book:global'] ]),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
-        // new Put(security: "is_granted('ROLE_ADMIN')"),
         new Patch(security: "is_granted('ROLE_ADMIN')"),
     ]
 )]

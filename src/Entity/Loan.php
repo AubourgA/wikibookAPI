@@ -59,7 +59,7 @@ class Loan
 
     #[ORM\ManyToOne(inversedBy: 'loans')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item'])]
+    #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item','read:book:item'])]
     private ?User $user = null;
 
     public function getId(): ?int
