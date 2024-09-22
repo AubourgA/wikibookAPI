@@ -67,7 +67,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         pattern: '/^[a-zA-Z\s]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
-    #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item','read:user:item','create:user:item'])]
+    #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item','read:user:item','create:user:item','read:book:item'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]

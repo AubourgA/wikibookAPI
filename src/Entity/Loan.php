@@ -44,7 +44,7 @@ class Loan
     private ?\DateTimeInterface $borrowDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Groups(['write:loan:item','read:loan:item','read:loan:collection','read:bookcopy:item','read:user:item'])]
+    #[Groups(['write:loan:item','read:loan:item','read:loan:collection','read:bookcopy:item','read:user:item','read:book:item'])]
     #[Assert\LessThanOrEqual('tomorrow')]
     #[Assert\Expression(
         "this.getReturnDate() === null or this.getReturnDate() > this.getBorrowDate()",
