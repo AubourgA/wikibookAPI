@@ -37,7 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ]
 )]
 
-#[ApiFilter(OrderFilter::class, properties: ['title' => 'ASC'])]
+#[ApiFilter(OrderFilter::class, properties: ['title' => 'ASC', 'createdAt' => 'ASC'])]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'ISBN' => 'partial', 'YearPublished' => 'exact', 'genre.name' => 'exact','author.name' => 'partial'])]
 #[UniqueEntity(fields: ['ISBN'], message: 'ISBN déja utilisé')]
 class Book
