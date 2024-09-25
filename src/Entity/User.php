@@ -27,7 +27,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
     operations: [
         new GetCollection(security: "is_granted('ROLE_ADMIN')", normalizationContext: ['groups' => ['read:user:collection'] ]),
         new Post(processor: UserPasswordHasher::class, denormalizationContext: ['groups' => ['create:user:item']]),
-        new Get(security: "is_granted('ROLE_USER') and object.isUser()", normalizationContext: ['groups' => ['read:user:item'] ]),
+        new Get(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') and object.isUser()", normalizationContext: ['groups' => ['read:user:item'] ]),
         new Patch(security: "is_granted('ROLE_USER') and object.isUser()", denormalizationContext:['groups' => ['write:user:item']]),
         new Delete(security: "is_granted('ROLE_ADMIN')",)
     ]
