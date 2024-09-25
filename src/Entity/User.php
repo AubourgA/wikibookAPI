@@ -67,7 +67,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         pattern: '/^[a-zA-Z\s]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
-    #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item','read:user:item','create:user:item','read:book:item'])]
+    #[Groups(['read:user:collection','read:loan:collection','read:loan:item','read:bookcopy:item','read:user:item','create:user:item','read:book:item'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
@@ -76,7 +76,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         pattern: '/^[a-zA-Z\s]+$/',
         match:true,
         message: 'Le champs doit etre que des lettres')]
-    #[Groups(['read:loan:collection','read:loan:item','read:bookcopy:item','read:user:item','create:user:item','read:book:item'])]
+    #[Groups(['read:user:collection','read:loan:collection','read:loan:item','read:bookcopy:item','read:user:item','create:user:item','read:book:item'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 100, nullable: true)]
@@ -97,7 +97,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     #[Assert\NotBlank()]
-    #[Groups(['read:user:collection'])]
+    #[Groups(['read:user:collection','read:user:item'])]
     private ?\DateTimeImmutable $subscribedAt = null;
 
     #[ORM\Column]
