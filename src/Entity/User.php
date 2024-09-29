@@ -12,9 +12,8 @@ use App\Repository\UserRepository;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Put;
+
 use Doctrine\Common\Collections\Collection;
-use Symfony\Bundle\SecurityBundle\Security;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -27,8 +26,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
     operations: [
         new GetCollection(security: "is_granted('ROLE_ADMIN')", normalizationContext: ['groups' => ['read:user:collection'] ]),
         new Post(processor: UserPasswordHasher::class, denormalizationContext: ['groups' => ['create:user:item']]),
-        new Get(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') and object.isUser()", normalizationContext: ['groups' => ['read:user:item'] ]),
-        new Patch(security: "is_granted('ROLE_USER') and object.isUser()", denormalizationContext:['groups' => ['write:user:item']]),
+        new Get(security: "is_granted('USER_VIEW', object)", normalizationContext: ['groups' => ['read:user:item'] ]),
+        new Patch(security: "is_granted('USER_EDIT', object)", denormalizationContext:['groups' => ['write:user:item']]),
         new Delete(security: "is_granted('ROLE_ADMIN')",)
     ]
 )]
@@ -111,11 +110,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read:user:collection','read:user:item'])]
     private Collection $loans;
 
-    public function __construct(private ?Security $security = null)
+  
+
+    public function __construct()
     {
         $this->isActive = 1;
         $this->loans = new ArrayCollection();
         $this->subscribedAt = new DateTimeImmutable();
+      
     }
 
     public function getId(): ?int
@@ -253,10 +255,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isUser(?UserInterface $user = null): bool
-    {
-        return $user instanceof self && $user->id === $this->id;
-    }
+
 
     public function isIsActive(): ?bool
     {

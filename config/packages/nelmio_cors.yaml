@@ -23,6 +23,6 @@ nelmio_cors:
             origin_regex: true
             allow_origin: ['%env(CORS_ALLOW_ORIGIN)%']
             allow_headers: ['Accept', Authorization,'Content-Type']
-            allow_methods: ['POST', 'OPTIONS', 'GET', 'DELETE', 'PUT']
+            allow_methods: ['POST', 'OPTIONS', 'GET', 'DELETE', 'PATCH']
             max_age: 100
             hosts: ['^api\.']
