@@ -342,7 +342,7 @@ class Book
     }
 
     #[ApiProperty(readable: true)]
-    #[Groups(['write:book:collection'])]
+    #[Groups(['read:book:item','read:book:collection'])]
     public function getContentUrl(): ?string
     {
         return $this->imageName 
