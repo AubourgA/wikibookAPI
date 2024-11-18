@@ -4,13 +4,13 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Patch;
 use Doctrine\DBAL\Types\Types;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\BookRepository;
 use ApiPlatform\Metadata\ApiFilter;
-
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,11 +18,12 @@ use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
-use ApiPlatform\Metadata\Patch;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ApiResource(
@@ -30,7 +31,9 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationMaximumItemsPerPage:12,
     operations: [
         new GetCollection(normalizationContext: ['groups' => ['read:book:collection','read:book:global'] ]),
-        new Post( security: "is_granted('ROLE_ADMIN')", denormalizationContext: ['groups'=>'write:book:collection']),
+        new Post( security: "is_granted('ROLE_ADMIN')", 
+                 denormalizationContext: ['groups'=>'write:book:collection'],
+                 inputFormats:['multipart' => ['multipart/form-data']]),
         new Get(normalizationContext: ['groups' => ['read:book:item','read:book:global'] ]),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
         new Patch(security: "is_granted('ROLE_ADMIN')"),
@@ -40,6 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(OrderFilter::class, properties: ['title' => 'ASC', 'createdAt' => 'ASC'])]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'ISBN' => 'partial', 'YearPublished' => 'exact', 'genre.name' => 'exact','author.name' => 'partial'])]
 #[UniqueEntity(fields: ['ISBN'], message: 'ISBN déja utilisé')]
+#[Vich\Uploadable]
 class Book
 {
     #[ORM\Id]
@@ -131,10 +135,26 @@ class Book
     #[Groups(['read:book:collection','read:book:item'])]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    #[Vich\UploadableField(mapping: 'book', fileNameProperty: 'imageName')]
+    #[Groups(['write:book:collection'])]
+    #[Assert\File(
+        maxSize: '2M',
+        mimeTypes: ['image/jpeg', 'image/png'],
+        mimeTypesMessage: 'Veuillez uploader une image au format JPG ou PNG.'
+    )]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $imageName = null;
+
     public function __construct()
     {
         $this->bookCopies = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -291,5 +311,42 @@ class Book
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+     /**
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $imageFile
+     */
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+    #[ApiProperty(readable: true)]
+    #[Groups(['book:read'])]
+    public function getContentUrl(): ?string
+    {
+        return $this->imageName 
+            ? '/media/' . $this->imageName 
+            : null;
     }
 }
